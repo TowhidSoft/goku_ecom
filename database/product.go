@@ -1,6 +1,6 @@
 package database
 
-var ProductList []Product
+var productList []Product
 
 type Product struct {
 	ID          int     `json:"id"`
@@ -8,6 +8,46 @@ type Product struct {
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
 	ImgUrl      string  `json:"imageURL"`
+}
+
+func Store(p Product) Product {
+	p.ID = len(productList) + 1
+	productList = append(productList, p)
+	return p
+}
+
+func List() []Product {
+	return productList
+}
+
+func Get(productId int) *Product {
+	for _, product := range productList {
+		if product.ID == productId {
+			return &product
+		}
+	}
+
+	return nil
+}
+
+func Update(product Product) {
+	for idx, p := range productList { // [a, b, c]
+		if p.ID == product.ID {
+			productList[idx] = product
+		}
+	}
+}
+
+func Delete(productId int) {
+	var tempList []Product
+
+	for _, p := range productList { // [a, b, c]
+		if p.ID != productId {
+			tempList = append(tempList, p)
+		}
+	}
+
+	productList = tempList
 }
 
 func init() {
@@ -35,7 +75,7 @@ func init() {
 		ImgUrl:      "https://daganghalal.blob.core.windows.net/28749/Product/1000x1000__apple1-1657088917775.jpg",
 	}
 
-	ProductList = append(ProductList, prd1)
-	ProductList = append(ProductList, prd2)
-	ProductList = append(ProductList, prd3)
+	productList = append(productList, prd1)
+	productList = append(productList, prd2)
+	productList = append(productList, prd3)
 }

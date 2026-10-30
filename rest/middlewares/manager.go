@@ -1,4 +1,4 @@
-package middleware
+package middlewares
 
 import "net/http"
 
@@ -25,8 +25,16 @@ func (mngr *Manager) With(handler http.Handler, middlewares ...Middleware) http.
 		h = middleware(h)
 	}
 
-	for _, globalMiddleware := range mngr.globalMiddlewares {
-		h = globalMiddleware(h)
+	return h
+}
+
+func (mngr *Manager) WrapMux(handler http.Handler) http.Handler {
+	h := handler
+
+	// [Logger, Hudai, CorsWithPreflight]
+	// h = CorsWithPreflight(hudai(logger(mux)))
+	for _, middleware := range mngr.globalMiddlewares {
+		h = middleware(h)
 	}
 
 	return h
