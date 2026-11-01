@@ -8,7 +8,7 @@ import (
 	"github.com/lpernett/godotenv"
 )
 
-var configurations Config
+var configurations *Config
 
 type Config struct {
 	Version      string
@@ -54,7 +54,7 @@ func LoadConfig() {
 		os.Exit(1)
 	}
 
-	configurations = Config{
+	configurations = &Config{
 		Version:      version,
 		ServiceName:  serviceName,
 		HttpPort:     int(port),    // type casting
@@ -62,7 +62,11 @@ func LoadConfig() {
 	}
 }
 
-func GetConfig() Config {
-	LoadConfig()
+func GetConfig() *Config {
+	if configurations == nil {
+		// first time
+		LoadConfig()
+	}
+
 	return configurations
 }
